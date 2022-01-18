@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="用了两年的拯救者最近老是卡顿，稍微开多点网页就卡起来了，实在是影响挖洞的心情。这两个月挖src攒了点钱，就想换个电脑。有师傅给我推荐mac，正好想试试苹果的产品，就入了个mbp。用了几天，体验还不错，感觉流畅度确实舒服，但是使用习惯完全跟win颠覆了，还是得慢慢适应。出现问题最多的还是一些软件的适配，一些工具的问题就搞了好久，有点烦，今天说说jdk的问题。​ 搞安全的用java的工具还是非常多的，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mac M1的jdk问题">
+<meta property="og:url" content="https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="Lawliet&#39;s blog">
+<meta property="og:description" content="用了两年的拯救者最近老是卡顿，稍微开多点网页就卡起来了，实在是影响挖洞的心情。这两个月挖src攒了点钱，就想换个电脑。有师傅给我推荐mac，正好想试试苹果的产品，就入了个mbp。用了几天，体验还不错，感觉流畅度确实舒服，但是使用习惯完全跟win颠覆了，还是得慢慢适应。出现问题最多的还是一些软件的适配，一些工具的问题就搞了好久，有点烦，今天说说jdk的问题。​ 搞安全的用java的工具还是非常多的，">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642514978634-d9be1f41-ddf8-4719-a3be-a153b7fb62a7.png#clientId=ufad5da42-d587-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=312&id=ue0b0b680&margin=%5Bobject%20Object%5D&name=image.png&originHeight=624&originWidth=1782&originalType=binary&ratio=1&rotation=0&showTitle=false&size=288803&status=done&style=none&taskId=u31bdd491-79cc-423c-908c-abde2d07661&title=&width=891">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642515111233-e89b3ffa-eaf2-4449-b57d-5b681fd238fd.png#clientId=ufad5da42-d587-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=601&id=u56e560df&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1202&originWidth=1820&originalType=binary&ratio=1&rotation=0&showTitle=false&size=635685&status=done&style=none&taskId=uc984b261-5de7-4e32-8bcc-9175da53615&title=&width=910">
+<meta property="article:published_time" content="2022-01-13T14:41:05.000Z">
+<meta property="article:modified_time" content="2022-01-18T15:26:40.000Z">
+<meta property="article:author" content="Lawliet">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642514978634-d9be1f41-ddf8-4719-a3be-a153b7fb62a7.png#clientId=ufad5da42-d587-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=312&id=ue0b0b680&margin=%5Bobject%20Object%5D&name=image.png&originHeight=624&originWidth=1782&originalType=binary&ratio=1&rotation=0&showTitle=false&size=288803&status=done&style=none&taskId=u31bdd491-79cc-423c-908c-abde2d07661&title=&width=891">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>mac M1的jdk问题</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Articles</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/&text=mac M1的jdk问题"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/&title=mac M1的jdk问题"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/&is_video=false&description=mac M1的jdk问题"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=mac M1的jdk问题&body=Check out this article: https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/&title=mac M1的jdk问题"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/&title=mac M1的jdk问题"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/&title=mac M1的jdk问题"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/&title=mac M1的jdk问题"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/&name=mac M1的jdk问题&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/&t=mac M1的jdk问题"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        mac M1的jdk问题
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Lawliet</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-01-13T14:41:05.000Z" itemprop="datePublished">2022-01-13</time>
+        
+      
+    </div>
+
+
+      
+
+      
+<meta name="referrer" content="no-referrer" />
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>用了两年的拯救者最近老是卡顿，稍微开多点网页就卡起来了，实在是影响挖洞的心情。这两个月挖src攒了点钱，就想换个电脑。有师傅给我推荐mac，正好想试试苹果的产品，就入了个mbp。用了几天，体验还不错，感觉流畅度确实舒服，但是使用习惯完全跟win颠覆了，还是得慢慢适应。出现问题最多的还是一些软件的适配，一些工具的问题就搞了好久，有点烦，今天说说jdk的问题。<br>​</p>
+<p>搞安全的用java的工具还是非常多的，bp、冰蝎等都是java的，然而最近装个新版本的bp得用高版本的java运行，前两天用到shiro工具又需要低版本java运行。在mac上装两个jdk问题倒不是很大，网上很多文章可以参考<br>如<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41852212/article/details/121913961">https://blog.csdn.net/qq_41852212/article/details/121913961</a><br>​</p>
+<p>但是m1芯片是arm架构的，网上搜到的基本都是安装arm版的jdk。目前只有zulu推出了mac arm版的jdk8。但是这种jdk打不开我需要使用的工具。<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642514978634-d9be1f41-ddf8-4719-a3be-a153b7fb62a7.png#clientId=ufad5da42-d587-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=312&id=ue0b0b680&margin=%5Bobject%20Object%5D&name=image.png&originHeight=624&originWidth=1782&originalType=binary&ratio=1&rotation=0&showTitle=false&size=288803&status=done&style=none&taskId=u31bdd491-79cc-423c-908c-abde2d07661&title=&width=891" alt="image.png"><br>后来尝试直接去oracle官网搜jdk<br>直接用x64的mac jdk进行安装<br>发现可以成功运行<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642515111233-e89b3ffa-eaf2-4449-b57d-5b681fd238fd.png#clientId=ufad5da42-d587-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=601&id=u56e560df&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1202&originWidth=1820&originalType=binary&ratio=1&rotation=0&showTitle=false&size=635685&status=done&style=none&taskId=uc984b261-5de7-4e32-8bcc-9175da53615&title=&width=910" alt="image.png"><br>不想注册oracle账号的可以在下面这个网站下载<br><a target="_blank" rel="noopener" href="http://www.codebaoku.com/jdk/jdk-oracle-jdk1-8.html">http://www.codebaoku.com/jdk/jdk-oracle-jdk1-8.html</a><br>​</p>
+<p>M1芯片的软件适配现在问题还有点多，苹果用rosetta2来帮助度过软件的两年过渡期<br>​</p>
+<p><code>每当用户使用专为配备 Intel 处理器的 Mac 电脑构建的 App 时，Rosetta 2 都会在后台运行。Rosetta 会自动转化 App 以便与 Apple 芯片搭配使用。</code><br>​</p>
+<p>经过几天的使用，在渗透方面的使用问题倒不大，也不用担心arm的问题，经过测试只要能适配mac的工具，基本都能成功运行。一些exe的直接开个虚拟机装个win就能使用，实测在pd虚拟机操作win也是十分流畅。希望之后适配m1的软件更多吧。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/&text=mac M1的jdk问题"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/&title=mac M1的jdk问题"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/&is_video=false&description=mac M1的jdk问题"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=mac M1的jdk问题&body=Check out this article: https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/&title=mac M1的jdk问题"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/&title=mac M1的jdk问题"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/&title=mac M1的jdk问题"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/&title=mac M1的jdk问题"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/&name=mac M1的jdk问题&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://lawliet99.github.io/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/&t=mac M1的jdk问题"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2020-2022
+    Lawliet
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Articles</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

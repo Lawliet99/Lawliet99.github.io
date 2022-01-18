@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="NTLM认证1、什么是NTLMNTLM是NT LAN Manager的缩写，这也说明了协议的来源。NTLM 是指 telnet 的一种验证身份方式，即质询&#x2F;应答身份验证协议。 2、NTLM发展NTLM的前身是LM Hash但是因为LM的加密算法密码长度最大只能为14个字符,而且容易被破解。所以为了解决LM加密和身份验证方案中固有的安全弱点，Microsoft 于1993年在Windows NT 3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="团队内网培训day2—NTLM认证和Kerbreros认证">
+<meta property="og:url" content="https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/index.html">
+<meta property="og:site_name" content="Lawliet&#39;s blog">
+<meta property="og:description" content="NTLM认证1、什么是NTLMNTLM是NT LAN Manager的缩写，这也说明了协议的来源。NTLM 是指 telnet 的一种验证身份方式，即质询&#x2F;应答身份验证协议。 2、NTLM发展NTLM的前身是LM Hash但是因为LM的加密算法密码长度最大只能为14个字符,而且容易被破解。所以为了解决LM加密和身份验证方案中固有的安全弱点，Microsoft 于1993年在Windows NT 3">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1641915896716-ddb2e8b5-8a8f-4649-bb07-43a54acb1536.png#clientId=uee01f1a8-77e5-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=281&id=uec67df49&margin=%5Bobject%20Object%5D&name=image.png&originHeight=562&originWidth=899&originalType=binary&ratio=1&rotation=0&showTitle=false&size=59821&status=done&style=none&taskId=ub2e50e11-29a6-408b-965c-9a7d12d9a72&title=&width=449.5">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1641917384187-7ed50211-3ef6-42fc-a799-ad1abab6b083.png#clientId=uee01f1a8-77e5-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=287&id=ub4c866a3&margin=%5Bobject%20Object%5D&name=image.png&originHeight=573&originWidth=725&originalType=binary&ratio=1&rotation=0&showTitle=false&size=332741&status=done&style=none&taskId=ud6b22985-ce19-4e61-a839-8209cfd3a2f&title=&width=362.5">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1641918046683-90814a24-30de-4eaf-bf69-fe3094f25059.png#clientId=uee01f1a8-77e5-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=165&id=u79a506b1&margin=%5Bobject%20Object%5D&name=image.png&originHeight=330&originWidth=781&originalType=binary&ratio=1&rotation=0&showTitle=false&size=77399&status=done&style=none&taskId=u90dee7fe-1402-4997-b2bf-ef3a1ff1e07&title=&width=390.5">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642070416734-3dcfe03e-342d-4ace-ba10-fa5a0b5c9536.png#clientId=u4aa12785-815a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=348&id=u5c56f267&margin=%5Bobject%20Object%5D&name=image.png&originHeight=696&originWidth=1013&originalType=binary&ratio=1&rotation=0&showTitle=false&size=347183&status=done&style=none&taskId=ue854aabf-aed4-4e2b-b988-4221c499d5d&title=&width=506.5">
+<meta property="article:published_time" content="2022-01-12T14:41:05.000Z">
+<meta property="article:modified_time" content="2022-01-13T14:26:40.000Z">
+<meta property="article:author" content="Lawliet">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1641915896716-ddb2e8b5-8a8f-4649-bb07-43a54acb1536.png#clientId=uee01f1a8-77e5-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=281&id=uec67df49&margin=%5Bobject%20Object%5D&name=image.png&originHeight=562&originWidth=899&originalType=binary&ratio=1&rotation=0&showTitle=false&size=59821&status=done&style=none&taskId=ub2e50e11-29a6-408b-965c-9a7d12d9a72&title=&width=449.5">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>团队内网培训day2—NTLM认证和Kerbreros认证</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Articles</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/01/11/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday1%E2%80%94%E5%86%85%E7%BD%91%E5%B8%B8%E8%A7%81%E5%90%8D%E8%AF%8D/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/&text=团队内网培训day2—NTLM认证和Kerbreros认证"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/&title=团队内网培训day2—NTLM认证和Kerbreros认证"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/&is_video=false&description=团队内网培训day2—NTLM认证和Kerbreros认证"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=团队内网培训day2—NTLM认证和Kerbreros认证&body=Check out this article: https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/&title=团队内网培训day2—NTLM认证和Kerbreros认证"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/&title=团队内网培训day2—NTLM认证和Kerbreros认证"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/&title=团队内网培训day2—NTLM认证和Kerbreros认证"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/&title=团队内网培训day2—NTLM认证和Kerbreros认证"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/&name=团队内网培训day2—NTLM认证和Kerbreros认证&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/&t=团队内网培训day2—NTLM认证和Kerbreros认证"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#NTLM%E8%AE%A4%E8%AF%81"><span class="toc-number">1.</span> <span class="toc-text">NTLM认证</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AFNTLM"><span class="toc-number">1.1.</span> <span class="toc-text">1、什么是NTLM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81NTLM%E5%8F%91%E5%B1%95"><span class="toc-number">1.2.</span> <span class="toc-text">2、NTLM发展</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81NTLM%E8%AE%A4%E8%AF%81%E6%96%B9%E6%B3%95"><span class="toc-number">1.3.</span> <span class="toc-text">3、NTLM认证方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Kerbreros%E8%AE%A4%E8%AF%81"><span class="toc-number">2.</span> <span class="toc-text">Kerbreros认证</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AFKerbreros%E8%AE%A4%E8%AF%81"><span class="toc-number">2.1.</span> <span class="toc-text">1、什么是Kerbreros认证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E5%9F%9F%E8%AE%A4%E8%AF%81%E5%8F%82%E4%B8%8E%E7%9A%84%E8%A7%92%E8%89%B2"><span class="toc-number">2.2.</span> <span class="toc-text">2、域认证参与的角色</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E5%9F%9F%E8%AE%A4%E8%AF%81%E6%B5%81%E7%A8%8B"><span class="toc-number">2.3.</span> <span class="toc-text">3、域认证流程</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        团队内网培训day2—NTLM认证和Kerbreros认证
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Lawliet</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-01-12T14:41:05.000Z" itemprop="datePublished">2022-01-12</time>
+        
+      
+    </div>
+
+
+      
+
+      
+<meta name="referrer" content="no-referrer" />
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="NTLM认证"><a href="#NTLM认证" class="headerlink" title="NTLM认证"></a>NTLM认证</h2><h3 id="1、什么是NTLM"><a href="#1、什么是NTLM" class="headerlink" title="1、什么是NTLM"></a>1、什么是NTLM</h3><p>NTLM是NT LAN Manager的缩写，这也说明了协议的来源。NTLM 是指 telnet 的一种验证身份方式，即质询/应答身份验证协议。</p>
+<h3 id="2、NTLM发展"><a href="#2、NTLM发展" class="headerlink" title="2、NTLM发展"></a>2、NTLM发展</h3><p>NTLM的前身是LM Hash但是因为LM的加密算法密码长度最大只能为14个字符,而且容易被破解。所以为了解决LM加密和身份验证方案中固有的安全弱点，Microsoft 于1993年在Windows NT 3.1中引入了NTLM协议，也就是说从Windows Vista 和 Windows Server 2008开始，默认情况下只存储NTLM Hash，LM Hash将不再存在。</p>
+<h3 id="3、NTLM认证方法"><a href="#3、NTLM认证方法" class="headerlink" title="3、NTLM认证方法"></a>3、NTLM认证方法</h3><p>NTLM认证主要有本地认证和网络认证两种方式<br><strong>本地认证</strong><br>本地登陆时用户密码存储在<strong>SAM</strong>文件中，可以把它当作一个存储密码的数据库，所有的操作都在本地进行的。它将用户输入的密码转换为<strong>NTLM</strong> Hash,然后与<strong>SAM</strong>中的<strong>NTLM Hash</strong>进行比较。<br>在本地登陆的情况下，操作系统会使用用户输入的密码作为凭据去与系统中的密<strong>​</strong>码进行校验，如果成功的话表明验证通过。操作系统的密码存储在C盘的目录下：%SystemRoot%\system32\config\sam<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1641915896716-ddb2e8b5-8a8f-4649-bb07-43a54acb1536.png#clientId=uee01f1a8-77e5-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=281&id=uec67df49&margin=%5Bobject%20Object%5D&name=image.png&originHeight=562&originWidth=899&originalType=binary&ratio=1&rotation=0&showTitle=false&size=59821&status=done&style=none&taskId=ub2e50e11-29a6-408b-965c-9a7d12d9a72&title=&width=449.5" alt="image.png"><br><strong>NTLM Hash生成算法</strong><br>当用户输入密码Lawliet的时候，操作系统会将Lawliet转换为16进制，经过Unicode转换后，再调用MD4加密算法加密，这个加密结果的十六进制就是NTLM Hash</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Lawliet -&gt; hex(16进制编码) = 4C61776C696574</span><br><span class="line">4C61776C696574 -&gt; Unicode = 4C00610077006C00690065007400</span><br><span class="line">4C00610077006C00690065007400 -&gt; MD4 = 69a4032d0d57528206dddcaa3560ca59</span><br></pre></td></tr></table></figure>
+<p><strong>本地认证流程</strong><br>当用户注销、重启、锁屏后，操作系统会让winlogon显示登陆界面，当winlogon.exe接收到账号密码输入之后，会将密码交给lsass进程，这个进程会存一份明文密码，将明文密码加密成NTLM Hash，对SAM数据库比较认证。(winlogon.exe即Windows Logon Process，是Windows NT用户登陆程序，用于管理用户登录和退出。LSASS用于微软Windows系统的安全机制。它用于本地安全和登陆策略。)<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1641917384187-7ed50211-3ef6-42fc-a799-ad1abab6b083.png#clientId=uee01f1a8-77e5-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=287&id=ub4c866a3&margin=%5Bobject%20Object%5D&name=image.png&originHeight=573&originWidth=725&originalType=binary&ratio=1&rotation=0&showTitle=false&size=332741&status=done&style=none&taskId=ud6b22985-ce19-4e61-a839-8209cfd3a2f&title=&width=362.5" alt="image.png"><br><strong>网络认证</strong><br>1、网络认证是一种Challenge/Response 验证机制，由三种消息组成:通常称为type1(协商)，类型type2(质询)和type3(身份验证)。<br>协商：主要用于确认双方协议版本、加密等级等（双方确定使用的协议版本，在NTLM认证中，NTLM响应分为NTLM v1，NTLMv2，NTLM session v2三种协议，不同协议使用不同格式的Challenge和加密算法）<br>质询：服务器在收到客户端的协商消息之后，会读取其中的内容，并从中选择出自己所能接受的服务内容，加密等级，安全服务等等。并生成一个随机数challenge, 然后生成challenge消息返回给客户端。该消息就是质询/响应认证机制的主要功能体现。<br>身份验证：验证主要是在挑战完成后，验证结果，是认证的最后一步。<br><strong>Windows Challenge/Response 认证过程</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">客户端发送用户名到服务器</span><br><span class="line">客户端对明文口令进行Hash处理获得NTLM Hash</span><br><span class="line">服务器生成一个 16字节的随机数（Challenge）发送给客户端</span><br><span class="line">客户端使用NTLM Hash对Challenge进行加密，加密结果为Response-C，然后将结果发送给服务器</span><br><span class="line">服务器通过用户名检索到相对应的NTLM Hash并对Challenge进行加密得到Response-S。</span><br><span class="line">比较Response-S和从客户端接收到的Response-C，如果一致则认证通过。</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1641918046683-90814a24-30de-4eaf-bf69-fe3094f25059.png#clientId=uee01f1a8-77e5-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=165&id=u79a506b1&margin=%5Bobject%20Object%5D&name=image.png&originHeight=330&originWidth=781&originalType=binary&ratio=1&rotation=0&showTitle=false&size=77399&status=done&style=none&taskId=u90dee7fe-1402-4997-b2bf-ef3a1ff1e07&title=&width=390.5" alt="image.png"><br><strong>NTLM 协议 V1 与 V2的区别</strong><br>NTLM v1与NTLM v2最显著的区别就是Challenge与加密算法不同，共同点就是加密的原料都是NTLM Hash。 Challage:NTLM v1的Challenge有8位，NTLM v2的Challenge为16位。 Net-NTLM Hash:NTLM v1的主要加密算法是DES，NTLM v2的主要加密算法是HMAC-MD5。<br>​</p>
+<h2 id="Kerbreros认证"><a href="#Kerbreros认证" class="headerlink" title="Kerbreros认证"></a>Kerbreros认证</h2><h3 id="1、什么是Kerbreros认证"><a href="#1、什么是Kerbreros认证" class="headerlink" title="1、什么是Kerbreros认证"></a>1、什么是Kerbreros认证</h3><p>Kerberos是一种网络认证协议，其设计目标是通过密钥系统为客户机/服务器应用程序提供强大的认证服务。该认证过程的实现不依赖于主机操作系统的认证，无需基于主机地址的信任，不要求网络上所有主机的物理安全，并假定网络上传送的数据包可以被任意地读取、修改和插入数据。在以上情况下，Kerberos 作为一种可信任的第三方认证服务，是通过传统的密码技术（如:共享密钥)执行认证服务的。</p>
+<h3 id="2、域认证参与的角色"><a href="#2、域认证参与的角色" class="headerlink" title="2、域认证参与的角色"></a>2、域认证参与的角色</h3><ul>
+<li><strong>Client</strong></li>
+<li><strong>Server</strong></li>
+<li><strong>KDC（</strong>密钥分发中心<strong>）</strong></li>
+<li>AD（account database）：存储所有client的白名单，只有存在于白名单的client才能顺利申请到TGT</li>
+<li>AS（Authentication Service）:为client生成TGT的服务，校验client的身份</li>
+<li>TGS（Ticket Granting Service）:为client生成某个服务的ticket</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642070416734-3dcfe03e-342d-4ace-ba10-fa5a0b5c9536.png#clientId=u4aa12785-815a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=348&id=u5c56f267&margin=%5Bobject%20Object%5D&name=image.png&originHeight=696&originWidth=1013&originalType=binary&ratio=1&rotation=0&showTitle=false&size=347183&status=done&style=none&taskId=ue854aabf-aed4-4e2b-b988-4221c499d5d&title=&width=506.5" alt="image.png"></p>
+<h3 id="3、域认证流程"><a href="#3、域认证流程" class="headerlink" title="3、域认证流程"></a>3、域认证流程</h3><p>看了这么多篇Kerbreros协议，讲得最细的就是这篇<a target="_blank" rel="noopener" href="https://www.cnblogs.com/artech/archive/2007/07/05/807492.html">https://www.cnblogs.com/artech/archive/2007/07/05/807492.html</a><br>最通俗易懂的还是在知乎上看到的这篇<br><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/22177404">https://www.zhihu.com/question/22177404</a></p>
+<p>很久很久以前，在<strong>Kerberos</strong>王国有一个神奇的王，它的名字叫<strong>KDC</strong>，国号为<strong>秦（域名）</strong>，为了更好地管理臣民（用户）、管理营业性场所（<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=%E6%96%87%E4%BB%B6%E5%85%B1%E4%BA%AB%E6%9C%8D%E5%8A%A1%E5%99%A8&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22:%22answer%22,%22sourceId%22:492680179%7D">文件共享服务器</a>、邮件服务器、打印服务器等），要求臣民、营业性场所到王室领取一个账号，账号主要包括用户名/密码。<br>有一个臣民叫王老虎，账号名为“王老虎”，密码“xxxxxxxx”, 那么在<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=Kerberos%E7%8E%8B%E5%9B%BD&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22:%22answer%22,%22sourceId%22:492680179%7D">Kerberos王国</a>里，有几个人知道<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=%E7%8E%8B%E8%80%81%E8%99%8E&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22:%22answer%22,%22sourceId%22:492680179%7D">王老虎</a>的密码？<br>一个是王老虎本人，另一个就是王，即KDC。还有其他人知道吧？没有了！<br>有一家提供文件共享的服务场所，名字叫“小美共享文件服务社”，密码是“xxxxxxx”，这个账号的密码，在KDC王国，只有2个人知道，一个是自己，另外一个就是王，KDC。</p>
+<p><strong>KDC王颁布以下规定：</strong><br><strong>（1）臣民去臣民家拜访，需要先到KDC票务中心买票，只有买到了被拜访者家的票（Service Ticket)，才能前往拜访。</strong><br><strong>（2）臣民前去营业场所消费，同样需要先到KDC购票入场。</strong><br><strong>（3）营业场所去营业场所消费，一样需要购票入场。</strong></p>
+<p>现在王老虎想去“<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=%E5%B0%8F%E7%BE%8E%E6%96%87%E4%BB%B6%E6%9C%8D%E5%8A%A1%E7%A4%BE&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22:%22answer%22,%22sourceId%22:492680179%7D">小美文件服务社</a>”坐坐，并浏览一下文件，能直接冲进去吗？<br>不能。<br>​<br>王老虎先到KDC票务中心买票，票务中心说：请问你是哪位？</p>
+<p>王老虎！<br>​<br>票务中心：请用王老虎的密钥加密“一段认证信息”发给我！</p>
+<p>王老虎照做！</p>
+<p>票务中心知道王老虎的密钥，成功解密王老虎的加密信息，认证成功！</p>
+<p>上文说了，在这个世界上除了KDC知道王老虎的密钥，另外一个就是王老虎本人了。</p>
+<p>既然KDC用王老虎的密钥解密成功，那说明加密信息的密钥肯定是王老虎的，间接表明买票的人，肯定是王老虎。<br>​<br>以上只是KDC验证王老虎的过程，问题来了，<strong>王老虎如何知道KDC票务中心不是假冒的？</strong></p>
+<p>很简单，玄机就在“一段认证信息”里了，这“一段认证信息”里，王老虎想写啥就写啥，王老虎是这样写的：<br>​<br><strong>“知乎到底能走多远？”</strong><br>​<br>由于这段信息是用王老虎的密钥发给KDC的，如果KDC是真的，那么自然可以解密到明文信息，然后把王老虎的“知乎到底能走多远？”返回给王老虎，那么王老虎就知道对方是真的KDC。<br>​<br>双向认证成功，可以避免任何一方是假冒的安全风险。</p>
+<p>既然认证成功，那么KDC就为王老虎出票呗。KDC给王老虎2件东西：<br><strong>(1）用王老虎密钥加密的session key</strong><br><strong>(2) “小美文件服务社”门票（Service Ticket)</strong><br>​<br>这个门票是用“小美文件服务社”的密钥加密，里面包含 :<br>​<br><strong>A) 和王老虎一样的session key</strong><br><strong>B) 门票持有人姓名：王老虎</strong><br><strong>C) 王老虎属于哪个Group</strong></p>
+<p>上文1、2 中的session key 是一样的。</p>
+<p>接下来王老虎就直奔小美处了，王老虎敲敲小美的门，小美说：先生请出示您的门票。</p>
+<p>王老虎出示2样东西：<br><strong>（1）门票Ticket</strong><br><strong>（2）用session key加密“一段认证信息”，认证信息里写道：“美女，你会说相声不？”</strong><br>​<br>小美用自己的密钥解密ticket，得到上文ABC信息。<br>​<br>小美用解密得到的A = session key ，解密（2），得到明文认证信息：“美女，你会说相声不？”<br>​<br>小美对王老虎说：<strong>“美女，你会说相声不？”</strong></p>
+<p>王老虎窃喜，看来这个小美不是假冒的，否则不可能知道我加密的认证信息！<br>​<br>至此，双向认证成功，接下来就使用双方都知道的session key 来加密/解密双向的流量，由于session key 只有KDC、王老虎、小美知晓，任何第三方都无法知晓session key，所以无法解密流量。<br>​<br>上文忘记说了，小美的每一个文件都具有权限管理，小美根据上文的C，可以知道王老虎属于哪个group，看看这个group有没有被访问文件的“ read 、write 、modify、full control”权限，并依据特定权限，限制王老虎操作文件的特权。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#NTLM%E8%AE%A4%E8%AF%81"><span class="toc-number">1.</span> <span class="toc-text">NTLM认证</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AFNTLM"><span class="toc-number">1.1.</span> <span class="toc-text">1、什么是NTLM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81NTLM%E5%8F%91%E5%B1%95"><span class="toc-number">1.2.</span> <span class="toc-text">2、NTLM发展</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81NTLM%E8%AE%A4%E8%AF%81%E6%96%B9%E6%B3%95"><span class="toc-number">1.3.</span> <span class="toc-text">3、NTLM认证方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Kerbreros%E8%AE%A4%E8%AF%81"><span class="toc-number">2.</span> <span class="toc-text">Kerbreros认证</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AFKerbreros%E8%AE%A4%E8%AF%81"><span class="toc-number">2.1.</span> <span class="toc-text">1、什么是Kerbreros认证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2%E3%80%81%E5%9F%9F%E8%AE%A4%E8%AF%81%E5%8F%82%E4%B8%8E%E7%9A%84%E8%A7%92%E8%89%B2"><span class="toc-number">2.2.</span> <span class="toc-text">2、域认证参与的角色</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E3%80%81%E5%9F%9F%E8%AE%A4%E8%AF%81%E6%B5%81%E7%A8%8B"><span class="toc-number">2.3.</span> <span class="toc-text">3、域认证流程</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/&text=团队内网培训day2—NTLM认证和Kerbreros认证"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/&title=团队内网培训day2—NTLM认证和Kerbreros认证"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/&is_video=false&description=团队内网培训day2—NTLM认证和Kerbreros认证"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=团队内网培训day2—NTLM认证和Kerbreros认证&body=Check out this article: https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/&title=团队内网培训day2—NTLM认证和Kerbreros认证"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/&title=团队内网培训day2—NTLM认证和Kerbreros认证"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/&title=团队内网培训day2—NTLM认证和Kerbreros认证"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/&title=团队内网培训day2—NTLM认证和Kerbreros认证"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/&name=团队内网培训day2—NTLM认证和Kerbreros认证&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://lawliet99.github.io/2022/01/12/%E5%9B%A2%E9%98%9F%E5%86%85%E7%BD%91%E5%9F%B9%E8%AE%ADday2%E2%80%94NTLM%E8%AE%A4%E8%AF%81%E5%92%8CKerbreros%E8%AE%A4%E8%AF%81/&t=团队内网培训day2—NTLM认证和Kerbreros认证"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2020-2022
+    Lawliet
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Articles</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
