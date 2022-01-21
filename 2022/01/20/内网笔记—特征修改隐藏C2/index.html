@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="端口特征修改CS的默认端口是50050，这个最明显的特征肯定要修改，改为随机可用端口即可，通过编辑teamserver文件修改。 证书特征修改CS的证书特征也容易被安全设备抓到，因此证书特征也需要去进行更改。Keytool是一个java数据证书的管理工具，Keytool将密钥 和 证书 存放在一个称为 keystore 的文件中,即.store后缀的文件中。keystore是java的密钥库，用来">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内网笔记—特征修改隐藏C2">
+<meta property="og:url" content="https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/index.html">
+<meta property="og:site_name" content="Lawliet&#39;s blog">
+<meta property="og:description" content="端口特征修改CS的默认端口是50050，这个最明显的特征肯定要修改，改为随机可用端口即可，通过编辑teamserver文件修改。 证书特征修改CS的证书特征也容易被安全设备抓到，因此证书特征也需要去进行更改。Keytool是一个java数据证书的管理工具，Keytool将密钥 和 证书 存放在一个称为 keystore 的文件中,即.store后缀的文件中。keystore是java的密钥库，用来">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642688633278-d90baa6f-e5a8-4af6-8210-155c79c36f0c.png#clientId=u1483fdfa-013f-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=278&id=u68a6b1d3&margin=%5Bobject%20Object%5D&name=image.png&originHeight=556&originWidth=1592&originalType=binary&ratio=1&rotation=0&showTitle=false&size=255715&status=done&style=none&taskId=u151d7370-42b6-4113-a8bf-58bb28992c2&title=&width=796">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642689386593-71bac4a3-4d85-4f8f-a10c-524fdb55b20d.png#clientId=u1483fdfa-013f-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=525&id=ua8177d31&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1050&originWidth=1348&originalType=binary&ratio=1&rotation=0&showTitle=false&size=355814&status=done&style=none&taskId=ufe428d6f-84dc-4bec-b4ca-561128b5b70&title=&width=674">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642691909947-5bf36641-a880-4124-8f5c-e49489f31b21.png#clientId=u1483fdfa-013f-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=531&id=u4dad7f16&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1062&originWidth=1752&originalType=binary&ratio=1&rotation=0&showTitle=false&size=468411&status=done&style=none&taskId=u32c055b7-b911-4de0-ac3e-2181dd82586&title=&width=876">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642693376764-c2af2f76-f4f9-4321-82ee-39c0071496bd.png#clientId=u1483fdfa-013f-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=526&id=u6349329e&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1052&originWidth=2312&originalType=binary&ratio=1&rotation=0&showTitle=false&size=632168&status=done&style=none&taskId=ue5b3f8c2-283d-4d12-843b-5a1c0877034&title=&width=1156">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642720211568-e3b0e066-3cc0-44a9-b1ea-aca58bba4619.png#clientId=u000b77bc-087a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=604&id=u15f33171&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1208&originWidth=2824&originalType=binary&ratio=1&rotation=0&showTitle=false&size=5212031&status=done&style=none&taskId=ua5b9fdb2-58d1-4536-a3ad-ff9ff29b882&title=&width=1412">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642720269967-81d98803-fa36-4765-a585-fa1a621c4aab.png#clientId=u000b77bc-087a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=639&id=uf2627110&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1278&originWidth=2636&originalType=binary&ratio=1&rotation=0&showTitle=false&size=1605784&status=done&style=none&taskId=u5822df8f-59ba-45e5-8a08-632a1817d7d&title=&width=1318">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642720324922-ea47c32a-68d2-4482-97b8-af7ed1cf9b5d.png#clientId=u000b77bc-087a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=431&id=ue0e51421&margin=%5Bobject%20Object%5D&name=image.png&originHeight=862&originWidth=2354&originalType=binary&ratio=1&rotation=0&showTitle=false&size=115309&status=done&style=none&taskId=u7f1ac3c4-4eb7-4887-86cf-eacb11e1dd7&title=&width=1177">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642720381345-2bae08b8-ab61-4cb2-a4de-7a2603d41421.png#clientId=u000b77bc-087a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=513&id=ue442c807&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1026&originWidth=2354&originalType=binary&ratio=1&rotation=0&showTitle=false&size=469703&status=done&style=none&taskId=u3f77d799-4c2f-477a-a92d-b2bffbb720b&title=&width=1177">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642720600311-950778a0-45c2-4ce1-a17c-80579220cb99.png#clientId=u000b77bc-087a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=579&id=u82d8d206&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1158&originWidth=1688&originalType=binary&ratio=1&rotation=0&showTitle=false&size=84994&status=done&style=none&taskId=u9e254156-367d-474e-add5-612237fd8c6&title=&width=844">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642721248948-fc74624c-1e6f-4112-a299-d5df9dcfe3f1.png#clientId=u000b77bc-087a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=465&id=ud6e1b9b8&margin=%5Bobject%20Object%5D&name=image.png&originHeight=930&originWidth=1398&originalType=binary&ratio=1&rotation=0&showTitle=false&size=79997&status=done&style=none&taskId=u6818d010-5f1c-4620-a35e-c7f6b54d731&title=&width=699">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642720746836-ee8bbf63-8257-41bb-a2b8-55c1829d5ceb.png#clientId=u000b77bc-087a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=606&id=ub96e45d2&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1212&originWidth=1256&originalType=binary&ratio=1&rotation=0&showTitle=false&size=110758&status=done&style=none&taskId=u7cc2e0d1-f7d7-48ae-9144-6b2d2133d93&title=&width=628">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642721839228-8a929ea5-5f49-46a9-94f7-2de266921510.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=489&id=u296083c5&margin=%5Bobject%20Object%5D&name=image.png&originHeight=978&originWidth=2272&originalType=binary&ratio=1&rotation=0&showTitle=false&size=605171&status=done&style=none&taskId=udf56c4fe-578f-430e-b8da-95a1c0d9d77&title=&width=1136">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642721892362-ff39a337-def0-455b-9246-b538dbe43292.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=545&id=u6ede1261&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1090&originWidth=2440&originalType=binary&ratio=1&rotation=0&showTitle=false&size=148568&status=done&style=none&taskId=u93bd87da-5f8e-42c7-a1a3-bb4ec755fdb&title=&width=1220">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642721993472-fdb9c724-1011-44e2-914d-a283ef25a5a2.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=315&id=u332df176&margin=%5Bobject%20Object%5D&name=image.png&originHeight=630&originWidth=1562&originalType=binary&ratio=1&rotation=0&showTitle=false&size=61210&status=done&style=none&taskId=u36d9b3fd-d8ea-4f6c-9db2-20e9842ba51&title=&width=781">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642722058054-7ab483ef-9a19-4183-9c72-8400ffa73cd1.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=612&id=u99d00c31&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1224&originWidth=2150&originalType=binary&ratio=1&rotation=0&showTitle=false&size=251505&status=done&style=none&taskId=udc1ec6c9-08e3-4041-969e-a9a06eaf929&title=&width=1075">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642722426121-6e80aeda-266a-4d98-a603-cad485fee97c.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=598&id=u18516bbe&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1196&originWidth=1944&originalType=binary&ratio=1&rotation=0&showTitle=false&size=745240&status=done&style=none&taskId=u3bebba0d-5859-4745-bd6d-3e54d2ec8bb&title=&width=972">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642722801969-e4314d8f-07a5-4f77-a62b-426ac900c722.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=617&id=u11bc1e7e&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1234&originWidth=1894&originalType=binary&ratio=1&rotation=0&showTitle=false&size=139199&status=done&style=none&taskId=u8333c447-7787-4543-93f7-b0e8816fdc9&title=&width=947">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642721412970-0101ae08-1fa9-4e67-ad08-a16031e32167.png#clientId=u000b77bc-087a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=163&id=u7067af65&margin=%5Bobject%20Object%5D&name=image.png&originHeight=326&originWidth=1876&originalType=binary&ratio=1&rotation=0&showTitle=false&size=145910&status=done&style=none&taskId=u3e7413f8-bc31-4a49-b27d-0431eeba620&title=&width=938">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642721576714-24f58a8a-face-47b4-b82d-ada632745cef.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=525&id=u86462805&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1050&originWidth=2164&originalType=binary&ratio=1&rotation=0&showTitle=false&size=555619&status=done&style=none&taskId=u379a6a72-dab8-42f1-8a6e-718e4d02701&title=&width=1082">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642722938559-912e9a43-bf68-42e5-901c-0f25c15315df.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=567&id=u6b5341e4&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1134&originWidth=2026&originalType=binary&ratio=1&rotation=0&showTitle=false&size=97439&status=done&style=none&taskId=u8ddab6e3-5024-4294-a8ce-d3f31111291&title=&width=1013">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642723216627-96e25745-9724-4af5-8e79-f74b8210bae8.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=605&id=u9b1cc5e8&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1210&originWidth=1882&originalType=binary&ratio=1&rotation=0&showTitle=false&size=112378&status=done&style=none&taskId=ub99232ad-60e6-40ec-808f-2ad8d13a86b&title=&width=941">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642765263537-a2c01eb6-c1f9-414a-8136-f38242e83bc4.png#clientId=uae9ff2bb-404d-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=377&id=uc2387e6d&margin=%5Bobject%20Object%5D&name=image.png&originHeight=754&originWidth=1330&originalType=binary&ratio=1&rotation=0&showTitle=false&size=788257&status=done&style=none&taskId=ufc99c14f-2177-416e-b4d3-5823f6cc28d&title=&width=665">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642765020247-d95a29a8-f94e-446a-8f6b-7f209c9e2400.png#clientId=uae9ff2bb-404d-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=546&id=udc36375f&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1092&originWidth=978&originalType=binary&ratio=1&rotation=0&showTitle=false&size=373202&status=done&style=none&taskId=ub61ad2cd-cf5b-4baa-bcf9-08269c8fd9b&title=&width=489">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642761242736-a05e3817-0055-4eb9-9952-24db81e8ef90.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=211&id=u0e64c647&margin=%5Bobject%20Object%5D&name=image.png&originHeight=422&originWidth=2976&originalType=binary&ratio=1&rotation=0&showTitle=false&size=109650&status=done&style=none&taskId=u9bca4f39-88fe-48ad-9bd9-f3fd2045f44&title=&width=1488">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/jpeg/12527156/1642761432398-bb99d924-d95e-42f1-83f9-d21212f56fb4.jpeg#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=drop&id=u1223611a&margin=%5Bobject%20Object%5D&name=71642761424_.pic.jpg&originHeight=71&originWidth=765&originalType=binary&ratio=1&rotation=0&showTitle=false&size=13057&status=done&style=none&taskId=u82c41b56-1fa1-4c07-ba22-5340fea3d0b&title=">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642761516176-59ee67bb-e1a0-4d69-93dd-69633665ce33.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=209&id=u7a02f434&margin=%5Bobject%20Object%5D&name=image.png&originHeight=418&originWidth=1436&originalType=binary&ratio=1&rotation=0&showTitle=false&size=206723&status=done&style=none&taskId=u9663aafb-e72e-4d46-a8e5-7d696b2c72f&title=&width=718">
+<meta property="article:published_time" content="2022-01-20T14:41:05.000Z">
+<meta property="article:modified_time" content="2022-01-21T11:45:30.496Z">
+<meta property="article:author" content="Lawliet">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642688633278-d90baa6f-e5a8-4af6-8210-155c79c36f0c.png#clientId=u1483fdfa-013f-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=278&id=u68a6b1d3&margin=%5Bobject%20Object%5D&name=image.png&originHeight=556&originWidth=1592&originalType=binary&ratio=1&rotation=0&showTitle=false&size=255715&status=done&style=none&taskId=u151d7370-42b6-4113-a8bf-58bb28992c2&title=&width=796">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>内网笔记—特征修改隐藏C2</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Articles</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/2022/01/13/mac%20M1%E7%9A%84jdk%E9%97%AE%E9%A2%98/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/&text=内网笔记—特征修改隐藏C2"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/&title=内网笔记—特征修改隐藏C2"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/&is_video=false&description=内网笔记—特征修改隐藏C2"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=内网笔记—特征修改隐藏C2&body=Check out this article: https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/&title=内网笔记—特征修改隐藏C2"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/&title=内网笔记—特征修改隐藏C2"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/&title=内网笔记—特征修改隐藏C2"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/&title=内网笔记—特征修改隐藏C2"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/&name=内网笔记—特征修改隐藏C2&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/&t=内网笔记—特征修改隐藏C2"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9"><span class="toc-number">1.</span> <span class="toc-text">端口特征修改</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%81%E4%B9%A6%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9"><span class="toc-number">2.</span> <span class="toc-text">证书特征修改</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E9%87%8F%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9"><span class="toc-number">3.</span> <span class="toc-text">流量特征修改</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5"><span class="toc-number">3.1.</span> <span class="toc-text">实践</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        内网笔记—特征修改隐藏C2
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Lawliet</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2022-01-20T14:41:05.000Z" itemprop="datePublished">2022-01-20</time>
+        
+      
+    </div>
+
+
+      
+
+      
+<meta name="referrer" content="no-referrer" />
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="端口特征修改"><a href="#端口特征修改" class="headerlink" title="端口特征修改"></a>端口特征修改</h2><p>CS的默认端口是50050，这个最明显的特征肯定要修改，改为随机可用端口即可，通过编辑teamserver文件修改。<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642688633278-d90baa6f-e5a8-4af6-8210-155c79c36f0c.png#clientId=u1483fdfa-013f-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=278&id=u68a6b1d3&margin=%5Bobject%20Object%5D&name=image.png&originHeight=556&originWidth=1592&originalType=binary&ratio=1&rotation=0&showTitle=false&size=255715&status=done&style=none&taskId=u151d7370-42b6-4113-a8bf-58bb28992c2&title=&width=796" alt="image.png"></p>
+<h2 id="证书特征修改"><a href="#证书特征修改" class="headerlink" title="证书特征修改"></a>证书特征修改</h2><p>CS的证书特征也容易被安全设备抓到，因此证书特征也需要去进行更改。<br>Keytool是一个java数据证书的管理工具，Keytool将密钥 和 证书 存放在一个称为 keystore 的文件中,即.store后缀的文件中。<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642689386593-71bac4a3-4d85-4f8f-a10c-524fdb55b20d.png#clientId=u1483fdfa-013f-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=525&id=ua8177d31&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1050&originWidth=1348&originalType=binary&ratio=1&rotation=0&showTitle=false&size=355814&status=done&style=none&taskId=ufe428d6f-84dc-4bec-b4ca-561128b5b70&title=&width=674" alt="image.png"><br>keystore是java的密钥库，用来进行通信加密，如数字签名。keystore就是用来保存密钥对的公钥和私钥。Keystore可理解为一个数据库，可以存放很多个组数据。<br>每组数据主要包含以下两种数据:</p>
+<ul>
+<li>密钥实体 —- 密钥(secret key)又或者私钥和配对公钥(采用非对称加密)</li>
+<li>可信任的证书实体 —- 只包含共钥</li>
+</ul>
+<p>查看CS的store文件<br>**keytool -list -v -keystore cobaltstrike.store **<br>密码为空<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642691909947-5bf36641-a880-4124-8f5c-e49489f31b21.png#clientId=u1483fdfa-013f-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=531&id=u4dad7f16&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1062&originWidth=1752&originalType=binary&ratio=1&rotation=0&showTitle=false&size=468411&status=done&style=none&taskId=u32c055b7-b911-4de0-ac3e-2181dd82586&title=&width=876" alt="image.png"><br>可以发现CS的特征还是很明显的<br>还需要配置malleable C2，把流量伪造成高信誉的网站，比如Google 、bing等<br>团队师傅给了我一个配好的证书，我就没去改了，网上有很多文章可以参考修改<br>如：<a target="_blank" rel="noopener" href="https://blog.csdn.net/shuteer_xu/article/details/110508415">https://blog.csdn.net/shuteer_xu/article/details/110508415</a><br><strong>​</strong></p>
+<p><strong>curl <a href="https://vps:端口">https://vps:端口</a> -v -k</strong><br>达到以下效果<br>​</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642693376764-c2af2f76-f4f9-4321-82ee-39c0071496bd.png#clientId=u1483fdfa-013f-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=526&id=u6349329e&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1052&originWidth=2312&originalType=binary&ratio=1&rotation=0&showTitle=false&size=632168&status=done&style=none&taskId=ue5b3f8c2-283d-4d12-843b-5a1c0877034&title=&width=1156" alt="image.png"></p>
+<h2 id="流量特征修改"><a href="#流量特征修改" class="headerlink" title="流量特征修改"></a>流量特征修改</h2><p>这里使用域前置来进行流量特征修改。域前置是一种用于隐藏真实C2服务器IP且同时能伪装为与高信誉域名通信的技术，多用于木马受控端和控制端之间的隐蔽通信。<br>利用域前置，可以让受害者认为木马程序是跟高信誉域名通信，而在高信誉域名背后是我们的C2服务器。<br>原理参考：<a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/195011#h2-2">https://www.anquanke.com/post/id/195011#h2-2</a><br>借助大佬的理解：其实还是加密通信的一种，只不过将使用了第三方的 TLS 通道做自己的事，有点像 “借尸还魂”，用可信的域名 TLS 通道传输了非该可信域名的信息。举个很简单的例子：正常情况下，我用我的手机和 A 进行通话，A 来电显示是我的手机号。在域前置中，我本来想给 B 打电话，但是我怕 B 知道我的手机号，于是我先给 A 打电话，我的手机和基站建立通话连接后，我再告诉基站我其实要给 B 打电话，这时候基站和 B 的手机建立了通信，B 接到电话以后，来电显示上是 A 的手机号。<br>​</p>
+<p><strong>域前置的隐蔽性：</strong>域前置在建立 TLS 通道时使用的是正常域名，所以无法在建立通道时检测。当建立好 TLS 通道后，传输过程全程加密，无法检测其真实内容</p>
+<h3 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h3><p><strong>第一步：</strong>申请一个域名，域名的作用是用来配合 CDN 来隐藏我们的C2服务器<br>国内的域名需要备案，推荐去国外购买。<a target="_blank" rel="noopener" href="https://www.freenom.com/">freenom</a>的免费的，可以去freenom注册一个免费的域名，或者去<a target="_blank" rel="noopener" href="https://tw.godaddy.com/">godaddy</a>购买。<br>这里选择freenom的<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642720211568-e3b0e066-3cc0-44a9-b1ea-aca58bba4619.png#clientId=u000b77bc-087a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=604&id=u15f33171&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1208&originWidth=2824&originalType=binary&ratio=1&rotation=0&showTitle=false&size=5212031&status=done&style=none&taskId=ua5b9fdb2-58d1-4536-a3ad-ff9ff29b882&title=&width=1412" alt="image.png"><br>输入你想注册的域名，进行下一步<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642720269967-81d98803-fa36-4765-a585-fa1a621c4aab.png#clientId=u000b77bc-087a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=639&id=uf2627110&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1278&originWidth=2636&originalType=binary&ratio=1&rotation=0&showTitle=false&size=1605784&status=done&style=none&taskId=u5822df8f-59ba-45e5-8a08-632a1817d7d&title=&width=1318" alt="image.png"><br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642720324922-ea47c32a-68d2-4482-97b8-af7ed1cf9b5d.png#clientId=u000b77bc-087a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=431&id=ue0e51421&margin=%5Bobject%20Object%5D&name=image.png&originHeight=862&originWidth=2354&originalType=binary&ratio=1&rotation=0&showTitle=false&size=115309&status=done&style=none&taskId=u7f1ac3c4-4eb7-4887-86cf-eacb11e1dd7&title=&width=1177" alt="image.png"><br>下一步，利用邮箱验证<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642720381345-2bae08b8-ab61-4cb2-a4de-7a2603d41421.png#clientId=u000b77bc-087a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=513&id=ue442c807&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1026&originWidth=2354&originalType=binary&ratio=1&rotation=0&showTitle=false&size=469703&status=done&style=none&taskId=u3f77d799-4c2f-477a-a92d-b2bffbb720b&title=&width=1177" alt="image.png"></p>
+<p>收到邮件后，要求注册，填写资料<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642720600311-950778a0-45c2-4ce1-a17c-80579220cb99.png#clientId=u000b77bc-087a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=579&id=u82d8d206&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1158&originWidth=1688&originalType=binary&ratio=1&rotation=0&showTitle=false&size=84994&status=done&style=none&taskId=u9e254156-367d-474e-add5-612237fd8c6&title=&width=844" alt="image.png"><br>信息可以乱填 问题不大<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642721248948-fc74624c-1e6f-4112-a299-d5df9dcfe3f1.png#clientId=u000b77bc-087a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=465&id=ud6e1b9b8&margin=%5Bobject%20Object%5D&name=image.png&originHeight=930&originWidth=1398&originalType=binary&ratio=1&rotation=0&showTitle=false&size=79997&status=done&style=none&taskId=u6818d010-5f1c-4620-a35e-c7f6b54d731&title=&width=699" alt="image.png"><br>这里有一个坑点，把你的代理换成美国的，不然就会出现订单失败的情况，如下<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642720746836-ee8bbf63-8257-41bb-a2b8-55c1829d5ceb.png#clientId=u000b77bc-087a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=606&id=ub96e45d2&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1212&originWidth=1256&originalType=binary&ratio=1&rotation=0&showTitle=false&size=110758&status=done&style=none&taskId=u7cc2e0d1-f7d7-48ae-9144-6b2d2133d93&title=&width=628" alt="image.png"><br>​</p>
+<p>域名注册完毕!<br>​</p>
+<p><strong>第二步：</strong>注册免费CDN服务Cloudflare<br><a target="_blank" rel="noopener" href="https://www.cloudflare.com/zh-cn/">https://www.cloudflare.com/zh-cn/</a><br>注册一个账号<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642721839228-8a929ea5-5f49-46a9-94f7-2de266921510.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=489&id=u296083c5&margin=%5Bobject%20Object%5D&name=image.png&originHeight=978&originWidth=2272&originalType=binary&ratio=1&rotation=0&showTitle=false&size=605171&status=done&style=none&taskId=udf56c4fe-578f-430e-b8da-95a1c0d9d77&title=&width=1136" alt="image.png"><br>注册完之后，点击add site<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642721892362-ff39a337-def0-455b-9246-b538dbe43292.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=545&id=u6ede1261&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1090&originWidth=2440&originalType=binary&ratio=1&rotation=0&showTitle=false&size=148568&status=done&style=none&taskId=u93bd87da-5f8e-42c7-a1a3-bb4ec755fdb&title=&width=1220" alt="image.png"><br>将freenom的域名填入<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642721993472-fdb9c724-1011-44e2-914d-a283ef25a5a2.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=315&id=u332df176&margin=%5Bobject%20Object%5D&name=image.png&originHeight=630&originWidth=1562&originalType=binary&ratio=1&rotation=0&showTitle=false&size=61210&status=done&style=none&taskId=u36d9b3fd-d8ea-4f6c-9db2-20e9842ba51&title=&width=781" alt="image.png"><br>选择免费的<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642722058054-7ab483ef-9a19-4183-9c72-8400ffa73cd1.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=612&id=u99d00c31&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1224&originWidth=2150&originalType=binary&ratio=1&rotation=0&showTitle=false&size=251505&status=done&style=none&taskId=udc1ec6c9-08e3-4041-969e-a9a06eaf929&title=&width=1075" alt="image.png"><br>name自己随便起一个   ipv4写上自己c2服务器ip  保存 继续<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642722426121-6e80aeda-266a-4d98-a603-cad485fee97c.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=598&id=u18516bbe&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1196&originWidth=1944&originalType=binary&ratio=1&rotation=0&showTitle=false&size=745240&status=done&style=none&taskId=u3bebba0d-5859-4745-bd6d-3e54d2ec8bb&title=&width=972" alt="image.png"></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642722801969-e4314d8f-07a5-4f77-a62b-426ac900c722.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=617&id=u11bc1e7e&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1234&originWidth=1894&originalType=binary&ratio=1&rotation=0&showTitle=false&size=139199&status=done&style=none&taskId=u8333c447-7787-4543-93f7-b0e8816fdc9&title=&width=947" alt="image.png"><br>打开freenom<br>查看我的域名  点击域名管理<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642721412970-0101ae08-1fa9-4e67-ad08-a16031e32167.png#clientId=u000b77bc-087a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=163&id=u7067af65&margin=%5Bobject%20Object%5D&name=image.png&originHeight=326&originWidth=1876&originalType=binary&ratio=1&rotation=0&showTitle=false&size=145910&status=done&style=none&taskId=u3e7413f8-bc31-4a49-b27d-0431eeba620&title=&width=938" alt="image.png"><br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642721576714-24f58a8a-face-47b4-b82d-ada632745cef.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=525&id=u86462805&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1050&originWidth=2164&originalType=binary&ratio=1&rotation=0&showTitle=false&size=555619&status=done&style=none&taskId=u379a6a72-dab8-42f1-8a6e-718e4d02701&title=&width=1082" alt="image.png">添加cloudflare的名称服务器<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642722938559-912e9a43-bf68-42e5-901c-0f25c15315df.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=567&id=u6b5341e4&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1134&originWidth=2026&originalType=binary&ratio=1&rotation=0&showTitle=false&size=97439&status=done&style=none&taskId=u8ddab6e3-5024-4294-a8ce-d3f31111291&title=&width=1013" alt="image.png"><br>配置全部关闭<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642723216627-96e25745-9724-4af5-8e79-f74b8210bae8.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=605&id=u9b1cc5e8&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1210&originWidth=1882&originalType=binary&ratio=1&rotation=0&showTitle=false&size=112378&status=done&style=none&taskId=ub99232ad-60e6-40ec-808f-2ad8d13a86b&title=&width=941" alt="image.png"><br>即可完成<br>​</p>
+<p>Cloudflare支持的HTTP端口是： 80,8080,8880,2052,2082,2086,2095 Cloudflare支持的HTTPs端口是： 443,2053,2083,2087,2096,8443<br>​</p>
+<p><strong>第三步：配置CS</strong><br>通过nslookup 你的域名  来查看cdn的ip，利用微步在线查看CDN ip解析的域名<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642765263537-a2c01eb6-c1f9-414a-8136-f38242e83bc4.png#clientId=uae9ff2bb-404d-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=377&id=uc2387e6d&margin=%5Bobject%20Object%5D&name=image.png&originHeight=754&originWidth=1330&originalType=binary&ratio=1&rotation=0&showTitle=false&size=788257&status=done&style=none&taskId=ufc99c14f-2177-416e-b4d3-5823f6cc28d&title=&width=665" alt="image.png"><br>配置cs    前两处域名填入高信誉域名   最后一处填入自己的域名<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642765020247-d95a29a8-f94e-446a-8f6b-7f209c9e2400.png#clientId=uae9ff2bb-404d-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=546&id=udc36375f&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1092&originWidth=978&originalType=binary&ratio=1&rotation=0&showTitle=false&size=373202&status=done&style=none&taskId=ub61ad2cd-cf5b-4baa-bcf9-08269c8fd9b&title=&width=489" alt="image.png"><br>生成木马至受害者的机器上线<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642761242736-a05e3817-0055-4eb9-9952-24db81e8ef90.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=211&id=u0e64c647&margin=%5Bobject%20Object%5D&name=image.png&originHeight=422&originWidth=2976&originalType=binary&ratio=1&rotation=0&showTitle=false&size=109650&status=done&style=none&taskId=u9bca4f39-88fe-48ad-9bd9-f3fd2045f44&title=&width=1488" alt="image.png"><br>去受控机器查看pid为4640的进程<br><img src="https://cdn.nlark.com/yuque/0/2022/jpeg/12527156/1642761432398-bb99d924-d95e-42f1-83f9-d21212f56fb4.jpeg#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=drop&id=u1223611a&margin=%5Bobject%20Object%5D&name=71642761424_.pic.jpg&originHeight=71&originWidth=765&originalType=binary&ratio=1&rotation=0&showTitle=false&size=13057&status=done&style=none&taskId=u82c41b56-1fa1-4c07-ba22-5340fea3d0b&title=" alt="71642761424_.pic.jpg"><br>发现连接ip为172.67.202.115，拿去百度一下<br><img src="https://cdn.nlark.com/yuque/0/2022/png/12527156/1642761516176-59ee67bb-e1a0-4d69-93dd-69633665ce33.png#clientId=u35dba198-8ad0-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=209&id=u7a02f434&margin=%5Bobject%20Object%5D&name=image.png&originHeight=418&originWidth=1436&originalType=binary&ratio=1&rotation=0&showTitle=false&size=206723&status=done&style=none&taskId=u9663aafb-e72e-4d46-a8e5-7d696b2c72f&title=&width=718" alt="image.png"><br>为cdn的ip，成功隐藏c2的ip<br>通过抓包发现受控机相互通信的是<a target="_blank" rel="noopener" href="http://www.xxxx.at的域名/">www.xxxx.at的域名</a><br>​</p>
+<p>其实上面的做法也不算是完美的域前置，域前置的精髓还是在于高信誉的域名，上面所说的高信誉域名也是随便找的同cdn下的域名，本来想试试某云来绕过获取高信誉域名，但是好像都需要验证域名归属，看了一下很多云厂商也都修复了这个漏洞。因此目前没搞到域名就只能暂用上面的方法来进行隐藏C2<br>​</p>
+<p>隐藏ip的手段其实还有很多，云函数也是一种不错的方法，不过云函数并不隐蔽，如果溯源者略微懂一些云函数的技术，就知道可以利用dos工具，把云函数流量打完，这样攻击者就会被暴露出来。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Articles</a></li>
+         
+          <li><a href="/search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AB%AF%E5%8F%A3%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9"><span class="toc-number">1.</span> <span class="toc-text">端口特征修改</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%81%E4%B9%A6%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9"><span class="toc-number">2.</span> <span class="toc-text">证书特征修改</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E9%87%8F%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9"><span class="toc-number">3.</span> <span class="toc-text">流量特征修改</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E8%B7%B5"><span class="toc-number">3.1.</span> <span class="toc-text">实践</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/&text=内网笔记—特征修改隐藏C2"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/&title=内网笔记—特征修改隐藏C2"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/&is_video=false&description=内网笔记—特征修改隐藏C2"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=内网笔记—特征修改隐藏C2&body=Check out this article: https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/&title=内网笔记—特征修改隐藏C2"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/&title=内网笔记—特征修改隐藏C2"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/&title=内网笔记—特征修改隐藏C2"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/&title=内网笔记—特征修改隐藏C2"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/&name=内网笔记—特征修改隐藏C2&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://lawliet99.github.io/2022/01/20/%E5%86%85%E7%BD%91%E7%AC%94%E8%AE%B0%E2%80%94%E7%89%B9%E5%BE%81%E4%BF%AE%E6%94%B9%E9%9A%90%E8%97%8FC2/&t=内网笔记—特征修改隐藏C2"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2020-2022
+    Lawliet
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Articles</a></li><!--
+     --><!--
+       --><li><a href="/search/">Search</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
